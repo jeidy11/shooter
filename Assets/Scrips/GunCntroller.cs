@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunCntroller : MonoBehaviour
+public class GunController : MonoBehaviour
 {
-    public static GunCntroller instance;
+    public static GunController instance;
     private BoxCollider gunTrigger;
     public Guns gun;
-    public LayerMask reycastLayerMask; 
+    public LayerMask raycastLayerMask; 
     public AudioSource audioSource; 
     private bool canFire;
     private float nextTimeToFire;
@@ -25,11 +25,12 @@ public class GunCntroller : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void start()
+    void Start()
     {
         gunTrigger = GetComponent<BoxCollider>();
+
         canFire = true;
-        SetTriggers(true);
+        SetTriggers();
     }
     IEnumerator CanFire()
     {
@@ -37,11 +38,12 @@ public class GunCntroller : MonoBehaviour
         yield return new WaitForSeconds(gun.fireRate);
         canFire = true;
     }
-    public void SetTriggers(bool isActive)
+    public void SetTriggers()
     {
         gunTrigger.size = new Vector3(gun.horizontalRange, gun.verticalRange, gun.range);
         gunTrigger.center = new Vector3(0, (0.5f * gun.verticalRange -1f),gun.range * 0.5f);
     }
+
     private void OnTriggerEnter(Collider other)
     {
         Enemy enemy = other.GetComponent<Enemy>();
@@ -70,7 +72,7 @@ public class GunCntroller : MonoBehaviour
                 {
                     var dir = (enemy.transform.position - transform.position).normalized;
                     RaycastHit hit;
-                    if (Physics.Raycast(transform.position, dir, out hit, gun.range *1.5f))
+                    if (Physics.Raycast(transform.position, dir, out hit, gun.range *1.5f, raycastLayerMask))
                     {
                         if (hit.transform == enemy.transform)
                         {

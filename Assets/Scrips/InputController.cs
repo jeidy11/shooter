@@ -8,6 +8,8 @@ public class InputController : MonoBehaviour
     public static InputController Instance;
 
     InputAction movementInput;
+
+    InputAction shootInput; 
     [HideInInspector] public Vector2 movementVector;
 
     public void Awake()
@@ -23,6 +25,14 @@ public class InputController : MonoBehaviour
         }
 
         movementInput = InputSystem.actions.FindAction("Move");
+        shootInput = InputSystem.actions.FindAction("Attack");
+    }
+    private void Shoot()
+    {
+        if (shootInput.WasPressedThisFrame())
+        {
+            GunController.instance.Fire();
+        }
     }
     public void GetMoveInput()
     {
@@ -32,5 +42,6 @@ public class InputController : MonoBehaviour
     void Update()
     {
         GetMoveInput();
+        Shoot(); 
     }
 }
